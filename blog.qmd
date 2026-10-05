@@ -1,0 +1,29 @@
+---
+title: "An Introduction to KNN Classifiers"
+author: "Jeremy Ng"
+date: "October 16, 2026"
+---
+
+# A Very, Very Toy Example
+
+Suppose for a moment that you have a bunch of flower petal data (as you do). Specifically at your disposal is data on the length and width of a petal along with the type of flower it belongs to. Here's your very representative data set:
+
+| Length (cm) | Width (cm) | Flower Type |
+|---|---|---|
+| 10.2 | 6.3 | A |
+| 6.4 | 3.2 | B |
+| 3.7 | 2.0 | C |
+
+Now imagine we have the length and width of an unidentified flower petal: 10.2 cm and 5.9cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, B or C flower?
+
+One way we could approach this is to compare this unclassified data point with data points we already have classified. We know that one class A flower petal has length 10.2cm and width 6.3cm, and this is fairly close to our unknown flower, so by some proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.
+
+What we essentially just did is run a short K-Nearest Neighbors (KNN) algorithm to classify this unknown data point with $k = 1$: we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors.
+
+## From Intuition to Math
+Now that we have some intuition behind the KNN algorithm, let's formalize it a little bit with some math. Let our unknown data point's features be $\vec{x}$. In our toy example above, $\vec{x}$ would contain the length and width of the flower petal. Let's also suppose we have a set of n labeled data points 
+
+$$
+\{(\vec{x}_i, y_i)\}_{i=1}^{n}
+$$
+where each $\vec{x}_i$ is the features of a data point and $y_i$ is the label/class of $\vec{x}_i$
