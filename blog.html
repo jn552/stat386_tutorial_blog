@@ -141,15 +141,44 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>Now imagine we have the length and width of an unidentified flower petal: 10.2 cm and 5.9cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, B or C flower?</p>
-<p>One way we could approach this is to compare this unclassified data point with data points we already have classified. We know that one class A flower petal has length 10.2cm and width 6.3cm, and this is fairly close to our unknown flower, so by some proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.</p>
+<p>Now imagine you have the length and width of an unidentified flower petal: 10.2 cm and 5.9cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, B or C flower?</p>
+<section id="whos-closer-knn-de-mystified" class="level2">
+<h2 class="anchored" data-anchor-id="whos-closer-knn-de-mystified">Who’s Closer – KNN De-mystified</h2>
+<p>One way we could approach this is to compare this unclassified data point with data points we already have classified. We know that one class A flower petal has length 10.2cm and width 6.3cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.</p>
 <p>What we essentially just did is run a short K-Nearest Neighbors (KNN) algorithm to classify this unknown data point with <span class="math inline">\(k = 1\)</span>: we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors.</p>
-<section id="from-intuition-to-math" class="level2">
-<h2 class="anchored" data-anchor-id="from-intuition-to-math">From Intuition to Math</h2>
+</section>
+</section>
+<section id="from-intuition-to-math" class="level1">
+<h1>From Intuition to Math</h1>
+<section id="some-quick-notation" class="level2">
+<h2 class="anchored" data-anchor-id="some-quick-notation">Some Quick Notation</h2>
 <p>Now that we have some intuition behind the KNN algorithm, let’s formalize it a little bit with some math. Let our unknown data point’s features be <span class="math inline">\(\vec{x}\)</span>. In our toy example above, <span class="math inline">\(\vec{x}\)</span> would contain the length and width of the flower petal. Let’s also suppose we have a set of n labeled data points</p>
 <p><span class="math display">\[
-\{(\vec{x}_i, y_i)\}_{i=1}^{n}
-\]</span> where each <span class="math inline">\(\vec{x}_i\)</span> is the features of a data point and <span class="math inline">\(y_i\)</span> is the label/class of <span class="math inline">\(\vec{x}_i\)</span></p>
+D = \{(\vec{x}_i, y_i)\}_{i=1}^{n}
+\]</span> where each <span class="math inline">\(\vec{x}_i\)</span> is the features of a data point and each <span class="math inline">\(y_i\)</span> is the label/class of <span class="math inline">\(\vec{x}_i\)</span>. This is our training set, <span class="math inline">\(D\)</span>.</p>
+</section>
+<section id="what-does-nearer-mean" class="level2">
+<h2 class="anchored" data-anchor-id="what-does-nearer-mean">What Does Nearer Mean?</h2>
+<p>Now that we established some notation, you may have noticed that we’ve been throwing around the term “nearer” or “closer” a lot. But what does it really mean for data points to be close to each other? The most intuitive way to define this distance is with a Euclidean definition, that is, the spatial distance between two datapoints <span class="math inline">\(\vec{x}\)</span>, <span class="math inline">\(\vec{v} \in \mathbb{R}^n\)</span> is given by</p>
+<p><span class="math display">\[
+d(\vec{x}, \vec{v}) = \sqrt{\sum_{i=1}^{n}{(\vec{x}_i - \vec{v}_i})^2}
+\]</span> where <span class="math inline">\(\vec{x}_i\)</span> and <span class="math inline">\(\vec{v}_i\)</span> are the <span class="math inline">\(i^{th}\)</span> components of <span class="math inline">\(\vec{x}\)</span> and <span class="math inline">\(\vec{v}\)</span> respectively.</p>
+<p>But Euclidean distance isn’t the only formulation of distance that exists! There are plenty of other distance metrics that we can use to define the distance between two points in n-dimensional space. For example, consider this metric called Manhattan distance:</p>
+<p><span class="math display">\[
+d(\vec{x}, \vec{v}) = \sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|}
+\]</span> In 2-D, an intuitive way to think about Manhattan distance is the distance I you would travel from point A to B if you could only move up/down and left/right. Another important distance metric is Minkowski distance:</p>
+<p><span class="math display">\[
+d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
+\]</span> Here, <span class="math inline">\(p\)</span> is typically called the Minkowski parameter. The larger <span class="math inline">\(p\)</span> is, the total distance becomes more dominated larger component-wise differences. Notice that when <span class="math inline">\(p=1\)</span> and <span class="math inline">\(p=2\)</span>, the Minkowski metric collapses into Manhattan and Euclidean distance respectively.</p>
+</section>
+<section id="the-knn-algorithm" class="level2">
+<h2 class="anchored" data-anchor-id="the-knn-algorithm">The KNN Algorithm</h2>
+<ol type="1">
+<li>Pick a <span class="math inline">\(k\)</span> value. This k value will determine how many of the nearest data points we will consider when deciding on how to label the new data point <span class="math inline">\(\vec{x}\)</span></li>
+<li>Calculate the distance between <span class="math inline">\(\vec{x}\)</span> and each <span class="math inline">\(\vec{x}_i \in D\)</span></li>
+<li>Consider the k-closest neighbors <span class="math inline">\(\vec{x}_i\)</span> to <span class="math inline">\(\vec{x}\)</span> and their respective labels <span class="math inline">\(y_i\)</span>. Find the most frequent label amongst <span class="math inline">\(\vec{x}_i\)</span>’s k-closest neighbors. Call this label <span class="math inline">\(\hat{y}\)</span></li>
+<li>Classify <span class="math inline">\(\vec{x}\)</span> with the label <span class="math inline">\(\hat{y}\)</span></li>
+</ol>
 </section>
 </section>
 

@@ -14,16 +14,47 @@ Suppose for a moment that you have a bunch of flower petal data (as you do). Spe
 | 6.4 | 3.2 | B |
 | 3.7 | 2.0 | C |
 
-Now imagine we have the length and width of an unidentified flower petal: 10.2 cm and 5.9cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, B or C flower?
+Now imagine you have the length and width of an unidentified flower petal: 10.2 cm and 5.9cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, B or C flower?
 
-One way we could approach this is to compare this unclassified data point with data points we already have classified. We know that one class A flower petal has length 10.2cm and width 6.3cm, and this is fairly close to our unknown flower, so by some proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.
+## Who's Closer -- KNN De-mystified
+One way we could approach this is to compare this unclassified data point with data points we already have classified. We know that one class A flower petal has length 10.2cm and width 6.3cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.
 
 What we essentially just did is run a short K-Nearest Neighbors (KNN) algorithm to classify this unknown data point with $k = 1$: we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors.
 
-## From Intuition to Math
+# From Intuition to Math
+
+## Some Quick Notation
 Now that we have some intuition behind the KNN algorithm, let's formalize it a little bit with some math. Let our unknown data point's features be $\vec{x}$. In our toy example above, $\vec{x}$ would contain the length and width of the flower petal. Let's also suppose we have a set of n labeled data points 
 
 $$
-\{(\vec{x}_i, y_i)\}_{i=1}^{n}
+D = \{(\vec{x}_i, y_i)\}_{i=1}^{n}
 $$
-where each $\vec{x}_i$ is the features of a data point and $y_i$ is the label/class of $\vec{x}_i$
+where each $\vec{x}_i$ is the features of a data point and each $y_i$ is the label/class of $\vec{x}_i$. This is our training set, $D$.
+
+## What Does Nearer Mean?
+Now that we established some notation, you may have noticed that we've been throwing around the term "nearer" or "closer" a lot. But what does it really mean for data points to be close to each other? The most intuitive way to define this distance is with a Euclidean definition, that is, the spatial distance between two datapoints $\vec{x}$, $\vec{v} \in \mathbb{R}^n$ is given by 
+
+$$
+d(\vec{x}, \vec{v}) = \sqrt{\sum_{i=1}^{n}{(\vec{x}_i - \vec{v}_i})^2}
+$$
+where $\vec{x}_i$ and  $\vec{v}_i$ are the $i^{th}$ components of $\vec{x}$ and $\vec{v}$ respectively. 
+
+But Euclidean distance isn't the only formulation of distance that exists! There are plenty of other distance metrics that we can use to define the distance between two points in n-dimensional space. For example, consider this metric called Manhattan distance:
+
+$$
+d(\vec{x}, \vec{v}) = \sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|}
+$$
+In 2-D, an intuitive way to think about Manhattan distance is the distance you would need to travel from point A to B if you could only move up/down and left/right. Another important distance metric is Minkowski distance:
+
+$$
+d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
+$$
+Here, $p$ is typically called the Minkowski parameter. The larger $p$ is, the total distance becomes more dominated by larger component-wise differences. Notice that when $p=1$ and $p=2$, the Minkowski metric collapses into Manhattan and Euclidean distance respectively.
+
+## The KNN Algorithm
+Now that we established some notation and a couple ways to think about distance, here is the full KNN algorithm:
+
+1. Pick a $k$ value. This k value will determine how many of the nearest data points we will consider when deciding on how to label the new data point $\vec{x}$
+2. Calculate the distance $d(\vec{x}, \vec{x}_i)$ for each $\vec{x}_i \in D$
+3. Consider the k-closest neighbors $\vec{x}_i$ to $\vec{x}$ and their respective labels $y_i$. Find the most frequent label amongst $\vec{x}_i$'s k-closest neighbors. Call this label $\hat{y}$
+4. Classify $\vec{x}$ with the label $\hat{y}$
