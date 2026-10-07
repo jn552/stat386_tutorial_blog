@@ -2,6 +2,11 @@
 title: "An Introduction to KNN Classifiers"
 author: "Jeremy Ng"
 date: "October 16, 2026"
+format:
+  html:
+    theme: cosmo
+    toc: true
+    css: styles.css
 ---
 
 # A Very, Very Toy Example
@@ -58,3 +63,156 @@ Now that we established some notation and a couple ways to think about distance,
 2. Calculate the distance $d(\vec{x}, \vec{x}_i)$ for each $\vec{x}_i \in D$
 3. Consider the k-closest neighbors $\vec{x}_i$ to $\vec{x}$ and their respective labels $y_i$. Find the most frequent label amongst $\vec{x}_i$'s k-closest neighbors. Call this label $\hat{y}$
 4. Classify $\vec{x}$ with the label $\hat{y}$
+
+# Sklearn's KNN
+Luckily, sklearn has a KNN classifier that we can import and use; we will use this to classify images of digits Here's how we can build a simple KNN using sklearn
+
+We will first need to import a couple modules to access sklearn's KNN classifier, to load in some data to work with (flower petal data), to split our data into training and test sets, and to acccess some methods that will make plotting easier.
+
+```{python}
+#| echo: false
+#| output: false
+%pip install scikit-learn numpy matplotlib
+```
+
+```{python}
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+import numpy as np
+import matplotlib.pyplot as plt
+```
+
+Next, we load in the data and split it into a training and test set. The iris data contains data on the sepal length and width and the petal length and width of a flower, but to make things simple, we will only use petal length and width; this will also make visualizng the predictions easier later on.
+
+```{python}
+#| output: false
+# loading in flower data
+iris_data = load_iris()
+
+# we will only look at petal length and width so we can visualize the predictions on a nice 2d plot later on
+X = iris_data.data[:, 2:]
+y = iris_data.target
+random_seed = 12
+
+# splitting our data into a training set and test set
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=random_seed)
+```
+
+With our data processed, we can now instantiate and fit our KNN classifier. We'll pick a k value of 5 for no particular reason . Fitting the model here is essentially just storing the data points.
+
+```{python}
+#| output: false
+# instantiating our KNN classifier with k=5
+model = KNeighborsClassifier(n_neighbors=5)
+
+# fitting our KNN classifier with our training data, i.e, essentially storing the training data
+model.fit(X_train, y_train)
+```
+
+With the model fitted to our training data, we can now make predictions! If we pass in our test data, or unknown data points, we can get label predictions. Using KNeighborsClassifier's score method, we can see that the accuracy of those predictions is about 98.3%
+
+```{python}
+#| output: true
+# printing out the accuracy of our KNN model in classifying the test set
+print(model.score(X_test, y_test))
+```
+
+Let's plot the data points and color them according to their labels to get a sense of what out KNN classifier is doing.
+
+```{python}
+# color list to color scatterplot points by labee
+colors = np.array(['#1f77b4', '#ff7f0e', '#2ca02c'])
+
+# getting label predictions from our KNN model
+preds = model.predict(X_test)
+
+# plotting prediction labels and true labels side by side
+plt.figure(figsize=(14, 5))
+
+plt.subplot(1, 2, 1)
+plt.scatter(X_test[:, 0], X_test[:, 1], c=colors[y_test])
+plt.xlabel("Petal Length")
+plt.ylabel("Petal Width")
+plt.title("True Classification")
+
+plt.subplot(1, 2, 2)
+plt.scatter(X_test[:, 0], X_test[:, 1], c=colors[preds])
+plt.xlabel("Petal Length")
+plt.ylabel("Petal Width")
+plt.title("Predicted Classification")
+plt.show()
+```
+
+The left scatterplot shows each data point according to their true label, and on the right, we have the datapoints colored according to their predicted label. We can see that the plots are pretty much identical, except for one point towards the top right. We can also plot something called a decision boundary plot to show how any potential data point will be labeled
+
+```{python}
+# import to make colormap of boundary plot colors consistent with the plots above
+from matplotlib.colors import ListedColormap
+
+colors = np.array(["#1f77b4", "#ff7f0e", "#2ca02c"])
+custom_cmap = ListedColormap(colors)
+
+# getting plotting range
+x_min = X_train[:, 0].min() - 0.1
+x_max = X_train[:, 0].max() + 0.1
+y_min = X_train[:, 1].min() - 0.1
+y_max = X_train[:, 1].max() + 0.1
+
+# creating a 2d grid; we will make a label prediction at every point on this grid
+xx, yy = np.meshgrid(np.linspace(x_min, x_max, 500), np.linspace(y_min, y_max, 500))
+
+# convert grid into array of 2d points in space
+grid_points = np.c_[xx.ravel(), yy.ravel()]
+
+# predict label at every grid point
+grid_predictions = model.predict(grid_points)
+
+# Reshape predictions to match the grid
+grid_predictions = grid_predictions.reshape(xx.shape)
+
+# Plot each label for each gridpoint on a contour plot
+plt.contourf(xx, yy, grid_predictions, levels=[-0.5, 0.5, 1.5, 2.5], alpha=0.3, cmap=custom_cmap)
+
+# Plot the actual predictions
+plt.scatter(X_test[:, 0], X_test[:, 1], c=preds, cmap=custom_cmap, edgecolor="black")
+plt.xlabel("Petal length")
+plt.ylabel("Petal width")
+plt.title("KNN Decision Boundaries")
+plt.show()
+```
+
+If a data point falls within a specific color region, our KNN model will classify it as the corresponding class. And of course, changing our k parameter changes how our KNN classifier makes decisions.
+
+```{python}
+#| output: true
+
+# trying different k values
+ks = [1, 13, 55]
+
+plt.figure(figsize=(14, 5))
+
+for i, k in enumerate(ks):
+
+    # instantiating anf fitting model
+    model = KNeighborsClassifier(n_neighbors=k)
+    model.fit(X_train, y_train)
+    
+    # getting predictions
+    grid_predictions = model.predict(grid_points)
+    grid_predictions = grid_predictions.reshape(xx.shape)
+    
+    # Plot decision regions
+    plt.subplot(1, 3, i + 1)
+    plt.contourf(xx, yy, grid_predictions, levels=[-0.5, 0.5, 1.5, 2.5], alpha=0.3, cmap=custom_cmap)
+
+    # Plot actual predictions
+    plt.scatter(X_test[:, 0], X_test[:, 1], c=preds, cmap=custom_cmap, edgecolor="black")
+    plt.xlabel("Petal length")
+    plt.ylabel("Petal width")
+    plt.title(f"KNN Decision Boundaries for k={k}")
+
+plt.show()
+```
+
+Notice the small isolated patch of orange in the green region for the $k=1$ plot; choosing too small a k value will accentuate oddities in the training data. On the other hand, notice how on the $k=55$ plotpicking too large a k value will result in the majority classes dominating, as you can see that no d
