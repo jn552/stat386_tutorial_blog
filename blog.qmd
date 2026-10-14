@@ -11,7 +11,7 @@ format:
 
 # A Very, Very Toy Example
 
-Suppose for a moment that you have a bunch of flower petal data (as you do). Specifically at your disposal is data on the length and width of a petal along with the type of flower it belongs to. Here's your very representative data set:
+Suppose for a moment that you have some data on flower petals (as you do). Specifically, the data available to you include the length and width of a petal along with the type of flower it belongs to. Here's your very representative data set:
 
 | Length (cm) | Width (cm) | Flower Type |
 |---|---|---|
@@ -19,25 +19,25 @@ Suppose for a moment that you have a bunch of flower petal data (as you do). Spe
 | 6.4 | 3.2 | B |
 | 3.7 | 2.0 | C |
 
-Now imagine you have the length and width of an unidentified flower petal: 10.2 cm and 5.9cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, B or C flower?
+Now imagine you have the length and width of an unidentified flower petal: 10.2 cm and 5.9 cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, type B or type C flower?
 
 ## Who's Closer -- KNN De-mystified
-One way we could approach this is to compare this unclassified data point with data points we already have classified. We know that one class A flower petal has length 10.2cm and width 6.3cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.
+One way we could approach this is to compare this unclassified data point with data points we have already classified. We know that one class A flower petal has length 10.2 cm and width 6.3 cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.
 
-What we essentially just did is run a short K-Nearest Neighbors (KNN) algorithm to classify this unknown data point with $k = 1$: we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors.
+What we essentially just did is run a short $k$-nearest neighbors (KNN) algorithm to classify this unknown data point with $k = 1$: we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors.
 
 # From Intuition to Math
 
 ## Some Quick Notation
-Now that we have some intuition behind the KNN algorithm, let's formalize it a little bit with some math. Let our unknown data point's features be $\vec{x}$. In our toy example above, $\vec{x}$ would contain the length and width of the flower petal. Let's also suppose we have a set of n labeled data points 
+Now that we have some intuition behind the KNN algorithm, let's formalize it with a bit of math. Let our unknown data point's features be $\vec{x}$. In our toy example above, $\vec{x}$ would contain the length and width of the flower petal. Let's also suppose we have a set of n labeled data points 
 
 $$
 D = \{(\vec{x}_i, y_i)\}_{i=1}^{n}
 $$
-where each $\vec{x}_i$ is the features of a data point and each $y_i$ is the label/class of $\vec{x}_i$. This is our training set, $D$.
+where each $\vec{x}_i$ represents the features of a data point and each $y_i$ is the label/class of $\vec{x}_i$. This is our training set, $D$.
 
 ## What Does Nearer Mean?
-Now that we established some notation, you may have noticed that we've been throwing around the term "nearer" or "closer" a lot. But what does it really mean for data points to be close to each other? The most intuitive way to define this distance is with a Euclidean definition, that is, the spatial distance between two datapoints $\vec{x}$, $\vec{v} \in \mathbb{R}^n$ is given by 
+Now that we have established some notation, you may have noticed that we've been throwing around the term "nearer" or "closer" a lot. But what does it really mean for data points to be close to each other? The most intuitive way to define this distance is with a Euclidean definition, that is, the spatial distance between two datapoints $\vec{x}$, $\vec{v} \in \mathbb{R}^n$ is given by 
 
 $$
 d(\vec{x}, \vec{v}) = \sqrt{\sum_{i=1}^{n}{(\vec{x}_i - \vec{v}_i})^2}
@@ -49,23 +49,23 @@ But Euclidean distance isn't the only formulation of distance that exists! There
 $$
 d(\vec{x}, \vec{v}) = \sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|}
 $$
-In 2-D, an intuitive way to think about Manhattan distance is the distance you would need to travel from point A to B if you could only move up/down and left/right. Another important distance metric is Minkowski distance:
+In two dimensions, an intuitive way to think about Manhattan distance is the distance you would need to travel from point A to B if you could only move up/down and left/right. Another important distance metric is Minkowski distance:
 
 $$
 d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
 $$
-Here, $p$ is typically called the Minkowski parameter. The larger $p$ is, the total distance becomes more dominated by larger component-wise differences. Notice that when $p=1$ and $p=2$, the Minkowski metric collapses into Manhattan and Euclidean distance respectively.
+Here, $p$ is typically called the Minkowski parameter. The larger $p$ is, the more the total distance is dominated by larger component-wise differences. Notice that when $p=1$ and $p=2$, the Minkowski metric reduces to Manhattan and Euclidean distance, respectively.
 
 ## The KNN Algorithm
-Now that we established some notation and a couple ways to think about distance, here is the full KNN algorithm:
+Now that we have established some notation and a couple ways to think about distance, here is the full KNN algorithm:
 
-1. Pick a $k$ value. This k value will determine how many of the nearest data points we will consider when deciding on how to label the new data point $\vec{x}$
+1. Pick a $k$ value. This $k$ value will determine how many of the nearest data points we will consider when deciding how to label the new data point $\vec{x}$
 2. Calculate the distance $d(\vec{x}, \vec{x}_i)$ for each $\vec{x}_i \in D$
-3. Consider the k-closest neighbors $\vec{x}_i$ to $\vec{x}$ and their respective labels $y_i$. Find the most frequent label amongst $\vec{x}_i$'s k-closest neighbors. Call this label $\hat{y}$
+3. Consider the $k$-closest neighbors $\vec{x}_i$ to $\vec{x}$ and their respective labels $y_i$. Find the most frequent label among $\vec{x}_i$'s k-closest neighbors. Call this label $\hat{y}$
 4. Classify $\vec{x}$ with the label $\hat{y}$
 
 # Sklearn's KNN
-Luckily, sklearn has a KNN classifier that we can import and use; we will use this to classify images of digits Here's how we can build a simple KNN using sklearn
+Luckily, sklearn has a KNN classifier that we can import and use; we will use this to classify flowers based off their petal measurements. Here's how we can build a simple KNN using sklearn
 
 We will first need to import a couple modules to access sklearn's KNN classifier, to load in some data to work with (flower petal data), to split our data into training and test sets, and to acccess some methods that will make plotting easier.
 
@@ -83,7 +83,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 ```
 
-Next, we load in the data and split it into a training and test set. The iris data contains data on the sepal length and width and the petal length and width of a flower, but to make things simple, we will only use petal length and width; this will also make visualizng the predictions easier later on.
+Next, we load in the data and split it into a training and test set. The iris data contains data on the sepal length and width and the petal length and width of a flower, but to make things simple, we will only use petal length and width; this will also make visualizing the predictions easier later on.
 
 ```{python}
 #| output: false
@@ -99,14 +99,14 @@ random_seed = 12
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.4, random_state=random_seed)
 ```
 
-With our data processed, we can now instantiate and fit our KNN classifier. We'll pick a k value of 5 for no particular reason . Fitting the model here is essentially just storing the data points.
+With our data processed, we can now instantiate and fit our KNN classifier. We'll pick a k value of 5 for no particular reason. Fitting the model here is essentially just storing the data points.
 
 ```{python}
 #| output: false
 # instantiating our KNN classifier with k=5
 model = KNeighborsClassifier(n_neighbors=5)
 
-# fitting our KNN classifier with our training data, i.e, essentially storing the training data
+# fitting our KNN classifier with our training data, i.e., essentially storing the training data
 model.fit(X_train, y_train)
 ```
 
@@ -118,10 +118,10 @@ With the model fitted to our training data, we can now make predictions! If we p
 print(model.score(X_test, y_test))
 ```
 
-Let's plot the data points and color them according to their labels to get a sense of what out KNN classifier is doing.
+Let's plot the data points and color them according to their labels to get a sense of what our KNN classifier is doing.
 
 ```{python}
-# color list to color scatterplot points by labee
+# color list to color scatterplot points by label
 colors = np.array(['#1f77b4', '#ff7f0e', '#2ca02c'])
 
 # getting label predictions from our KNN model
@@ -144,7 +144,7 @@ plt.title("Predicted Classification")
 plt.show()
 ```
 
-The left scatterplot shows each data point according to their true label, and on the right, we have the datapoints colored according to their predicted label. We can see that the plots are pretty much identical, except for one point towards the top right. We can also plot something called a decision boundary plot to show how any potential data point will be labeled
+The left scatterplot shows each data point according to their true label, and on the right, we have the data points colored according to their predicted label. We can see that the plots are pretty much identical, except for one point towards the top right. We can also plot something called a decision-boundary plot to show how any potential data point will be labeled
 
 ```{python}
 # import to make colormap of boundary plot colors consistent with the plots above
@@ -162,7 +162,7 @@ y_max = X_train[:, 1].max() + 0.1
 # creating a 2d grid; we will make a label prediction at every point on this grid
 xx, yy = np.meshgrid(np.linspace(x_min, x_max, 500), np.linspace(y_min, y_max, 500))
 
-# convert grid into array of 2d points in space
+# convert grid into array of 2D points in space
 grid_points = np.c_[xx.ravel(), yy.ravel()]
 
 # predict label at every grid point
@@ -171,7 +171,7 @@ grid_predictions = model.predict(grid_points)
 # Reshape predictions to match the grid
 grid_predictions = grid_predictions.reshape(xx.shape)
 
-# Plot each label for each gridpoint on a contour plot
+# Plot each label for each grid point on a contour plot
 plt.contourf(xx, yy, grid_predictions, levels=[-0.5, 0.5, 1.5, 2.5], alpha=0.3, cmap=custom_cmap)
 
 # Plot the actual predictions
@@ -194,9 +194,10 @@ plt.figure(figsize=(14, 5))
 
 for i, k in enumerate(ks):
 
-    # instantiating anf fitting model
+    # instantiating and fitting model
     model = KNeighborsClassifier(n_neighbors=k)
     model.fit(X_train, y_train)
+    preds = model.predict(X_test)
     
     # getting predictions
     grid_predictions = model.predict(grid_points)
@@ -215,4 +216,4 @@ for i, k in enumerate(ks):
 plt.show()
 ```
 
-Notice the small isolated patch of orange in the green region for the $k=1$ plot; choosing too small a k value will accentuate oddities in the training data. On the other hand, notice how on the $k=55$ plotpicking too large a k value will result in the majority classes dominating, as you can see that no d
+Notice the small isolated patch of orange in the green region for the $k=1$ plot; choosing too small a k value will accentuate oddities in the training data. On the other hand, notice how no data point will ever be labeled with the blue class on the $k=55$ plot. This is because picking too large a k value will result in the majority classes dominating. So while there may be no correct value of k to use, some are definitely better than others.

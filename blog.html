@@ -171,7 +171,7 @@ window.Quarto = {
 
 <section id="a-very-very-toy-example" class="level1">
 <h1>A Very, Very Toy Example</h1>
-<p>Suppose for a moment that you have a bunch of flower petal data (as you do). Specifically at your disposal is data on the length and width of a petal along with the type of flower it belongs to. Here’s your very representative data set:</p>
+<p>Suppose for a moment that you have some data on flower petals (as you do). Specifically, the data available to you include the length and width of a petal along with the type of flower it belongs to. Here’s your very representative data set:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -198,60 +198,60 @@ window.Quarto = {
 </tr>
 </tbody>
 </table>
-<p>Now imagine you have the length and width of an unidentified flower petal: 10.2 cm and 5.9cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, B or C flower?</p>
+<p>Now imagine you have the length and width of an unidentified flower petal: 10.2 cm and 5.9 cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, type B or type C flower?</p>
 <section id="whos-closer-knn-de-mystified" class="level2">
 <h2 class="anchored" data-anchor-id="whos-closer-knn-de-mystified">Who’s Closer – KNN De-mystified</h2>
-<p>One way we could approach this is to compare this unclassified data point with data points we already have classified. We know that one class A flower petal has length 10.2cm and width 6.3cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.</p>
-<p>What we essentially just did is run a short K-Nearest Neighbors (KNN) algorithm to classify this unknown data point with <span class="math inline">\(k = 1\)</span>: we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors.</p>
+<p>One way we could approach this is to compare this unclassified data point with data points we have already classified. We know that one class A flower petal has length 10.2 cm and width 6.3 cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.</p>
+<p>What we essentially just did is run a short <span class="math inline">\(k\)</span>-nearest neighbors (KNN) algorithm to classify this unknown data point with <span class="math inline">\(k = 1\)</span>: we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors.</p>
 </section>
 </section>
 <section id="from-intuition-to-math" class="level1">
 <h1>From Intuition to Math</h1>
 <section id="some-quick-notation" class="level2">
 <h2 class="anchored" data-anchor-id="some-quick-notation">Some Quick Notation</h2>
-<p>Now that we have some intuition behind the KNN algorithm, let’s formalize it a little bit with some math. Let our unknown data point’s features be <span class="math inline">\(\vec{x}\)</span>. In our toy example above, <span class="math inline">\(\vec{x}\)</span> would contain the length and width of the flower petal. Let’s also suppose we have a set of n labeled data points</p>
+<p>Now that we have some intuition behind the KNN algorithm, let’s formalize it with a bit of math. Let our unknown data point’s features be <span class="math inline">\(\vec{x}\)</span>. In our toy example above, <span class="math inline">\(\vec{x}\)</span> would contain the length and width of the flower petal. Let’s also suppose we have a set of n labeled data points</p>
 <p><span class="math display">\[
 D = \{(\vec{x}_i, y_i)\}_{i=1}^{n}
-\]</span> where each <span class="math inline">\(\vec{x}_i\)</span> is the features of a data point and each <span class="math inline">\(y_i\)</span> is the label/class of <span class="math inline">\(\vec{x}_i\)</span>. This is our training set, <span class="math inline">\(D\)</span>.</p>
+\]</span> where each <span class="math inline">\(\vec{x}_i\)</span> represents the features of a data point and each <span class="math inline">\(y_i\)</span> is the label/class of <span class="math inline">\(\vec{x}_i\)</span>. This is our training set, <span class="math inline">\(D\)</span>.</p>
 </section>
 <section id="what-does-nearer-mean" class="level2">
 <h2 class="anchored" data-anchor-id="what-does-nearer-mean">What Does Nearer Mean?</h2>
-<p>Now that we established some notation, you may have noticed that we’ve been throwing around the term “nearer” or “closer” a lot. But what does it really mean for data points to be close to each other? The most intuitive way to define this distance is with a Euclidean definition, that is, the spatial distance between two datapoints <span class="math inline">\(\vec{x}\)</span>, <span class="math inline">\(\vec{v} \in \mathbb{R}^n\)</span> is given by</p>
+<p>Now that we have established some notation, you may have noticed that we’ve been throwing around the term “nearer” or “closer” a lot. But what does it really mean for data points to be close to each other? The most intuitive way to define this distance is with a Euclidean definition, that is, the spatial distance between two datapoints <span class="math inline">\(\vec{x}\)</span>, <span class="math inline">\(\vec{v} \in \mathbb{R}^n\)</span> is given by</p>
 <p><span class="math display">\[
 d(\vec{x}, \vec{v}) = \sqrt{\sum_{i=1}^{n}{(\vec{x}_i - \vec{v}_i})^2}
 \]</span> where <span class="math inline">\(\vec{x}_i\)</span> and <span class="math inline">\(\vec{v}_i\)</span> are the <span class="math inline">\(i^{th}\)</span> components of <span class="math inline">\(\vec{x}\)</span> and <span class="math inline">\(\vec{v}\)</span> respectively.</p>
 <p>But Euclidean distance isn’t the only formulation of distance that exists! There are plenty of other distance metrics that we can use to define the distance between two points in n-dimensional space. For example, consider this metric called Manhattan distance:</p>
 <p><span class="math display">\[
 d(\vec{x}, \vec{v}) = \sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|}
-\]</span> In 2-D, an intuitive way to think about Manhattan distance is the distance you would need to travel from point A to B if you could only move up/down and left/right. Another important distance metric is Minkowski distance:</p>
+\]</span> In two dimensions, an intuitive way to think about Manhattan distance is the distance you would need to travel from point A to B if you could only move up/down and left/right. Another important distance metric is Minkowski distance:</p>
 <p><span class="math display">\[
 d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
-\]</span> Here, <span class="math inline">\(p\)</span> is typically called the Minkowski parameter. The larger <span class="math inline">\(p\)</span> is, the total distance becomes more dominated by larger component-wise differences. Notice that when <span class="math inline">\(p=1\)</span> and <span class="math inline">\(p=2\)</span>, the Minkowski metric collapses into Manhattan and Euclidean distance respectively.</p>
+\]</span> Here, <span class="math inline">\(p\)</span> is typically called the Minkowski parameter. The larger <span class="math inline">\(p\)</span> is, the more the total distance is dominated by larger component-wise differences. Notice that when <span class="math inline">\(p=1\)</span> and <span class="math inline">\(p=2\)</span>, the Minkowski metric reduces to Manhattan and Euclidean distance, respectively.</p>
 </section>
 <section id="the-knn-algorithm" class="level2">
 <h2 class="anchored" data-anchor-id="the-knn-algorithm">The KNN Algorithm</h2>
-<p>Now that we established some notation and a couple ways to think about distance, here is the full KNN algorithm:</p>
+<p>Now that we have established some notation and a couple ways to think about distance, here is the full KNN algorithm:</p>
 <ol type="1">
-<li>Pick a <span class="math inline">\(k\)</span> value. This k value will determine how many of the nearest data points we will consider when deciding on how to label the new data point <span class="math inline">\(\vec{x}\)</span></li>
+<li>Pick a <span class="math inline">\(k\)</span> value. This <span class="math inline">\(k\)</span> value will determine how many of the nearest data points we will consider when deciding how to label the new data point <span class="math inline">\(\vec{x}\)</span></li>
 <li>Calculate the distance <span class="math inline">\(d(\vec{x}, \vec{x}_i)\)</span> for each <span class="math inline">\(\vec{x}_i \in D\)</span></li>
-<li>Consider the k-closest neighbors <span class="math inline">\(\vec{x}_i\)</span> to <span class="math inline">\(\vec{x}\)</span> and their respective labels <span class="math inline">\(y_i\)</span>. Find the most frequent label amongst <span class="math inline">\(\vec{x}_i\)</span>’s k-closest neighbors. Call this label <span class="math inline">\(\hat{y}\)</span></li>
+<li>Consider the <span class="math inline">\(k\)</span>-closest neighbors <span class="math inline">\(\vec{x}_i\)</span> to <span class="math inline">\(\vec{x}\)</span> and their respective labels <span class="math inline">\(y_i\)</span>. Find the most frequent label among <span class="math inline">\(\vec{x}_i\)</span>’s k-closest neighbors. Call this label <span class="math inline">\(\hat{y}\)</span></li>
 <li>Classify <span class="math inline">\(\vec{x}\)</span> with the label <span class="math inline">\(\hat{y}\)</span></li>
 </ol>
 </section>
 </section>
 <section id="sklearns-knn" class="level1">
 <h1>Sklearn’s KNN</h1>
-<p>Luckily, sklearn has a KNN classifier that we can import and use; we will use this to classify images of digits Here’s how we can build a simple KNN using sklearn</p>
+<p>Luckily, sklearn has a KNN classifier that we can import and use; we will use this to classify flowers based off their petal measurements. Here’s how we can build a simple KNN using sklearn</p>
 <p>We will first need to import a couple modules to access sklearn’s KNN classifier, to load in some data to work with (flower petal data), to split our data into training and test sets, and to acccess some methods that will make plotting easier.</p>
-<div id="3b55949b" class="cell" data-execution_count="2">
+<div id="d2b497d2" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.neighbors <span class="im">import</span> KNeighborsClassifier</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Next, we load in the data and split it into a training and test set. The iris data contains data on the sepal length and width and the petal length and width of a flower, but to make things simple, we will only use petal length and width; this will also make visualizng the predictions easier later on.</p>
-<div id="e6be4e20" class="cell" data-execution_count="3">
+<p>Next, we load in the data and split it into a training and test set. The iris data contains data on the sepal length and width and the petal length and width of a flower, but to make things simple, we will only use petal length and width; this will also make visualizing the predictions easier later on.</p>
+<div id="c2be5ec8" class="cell" data-execution_count="3">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># loading in flower data</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>iris_data <span class="op">=</span> load_iris()</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -263,25 +263,25 @@ d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># splitting our data into a training set and test set</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.4</span>, random_state<span class="op">=</span>random_seed)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>With our data processed, we can now instantiate and fit our KNN classifier. We’ll pick a k value of 5 for no particular reason . Fitting the model here is essentially just storing the data points.</p>
-<div id="8b09e11e" class="cell" data-execution_count="4">
+<p>With our data processed, we can now instantiate and fit our KNN classifier. We’ll pick a k value of 5 for no particular reason. Fitting the model here is essentially just storing the data points.</p>
+<div id="e0fba6de" class="cell" data-execution_count="4">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># instantiating our KNN classifier with k=5</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> KNeighborsClassifier(n_neighbors<span class="op">=</span><span class="dv">5</span>)</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fitting our KNN classifier with our training data, i.e, essentially storing the training data</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># fitting our KNN classifier with our training data, i.e., essentially storing the training data</span></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>model.fit(X_train, y_train)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>With the model fitted to our training data, we can now make predictions! If we pass in our test data, or unknown data points, we can get label predictions. Using KNeighborsClassifier’s score method, we can see that the accuracy of those predictions is about 98.3%</p>
-<div id="61457294" class="cell" data-execution_count="5">
+<div id="54266452" class="cell" data-execution_count="5">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># printing out the accuracy of our KNN model in classifying the test set</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.score(X_test, y_test))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.9833333333333333</code></pre>
 </div>
 </div>
-<p>Let’s plot the data points and color them according to their labels to get a sense of what out KNN classifier is doing.</p>
-<div id="bcbc720d" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># color list to color scatterplot points by labee</span></span>
+<p>Let’s plot the data points and color them according to their labels to get a sense of what our KNN classifier is doing.</p>
+<div id="b644ee2a" class="cell" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># color list to color scatterplot points by label</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>colors <span class="op">=</span> np.array([<span class="st">'#1f77b4'</span>, <span class="st">'#ff7f0e'</span>, <span class="st">'#2ca02c'</span>])</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># getting label predictions from our KNN model</span></span>
@@ -310,8 +310,8 @@ d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
 </div>
 </div>
 </div>
-<p>The left scatterplot shows each data point according to their true label, and on the right, we have the datapoints colored according to their predicted label. We can see that the plots are pretty much identical, except for one point towards the top right. We can also plot something called a decision boundary plot to show how any potential data point will be labeled</p>
-<div id="c5827c57" class="cell" data-execution_count="7">
+<p>The left scatterplot shows each data point according to their true label, and on the right, we have the data points colored according to their predicted label. We can see that the plots are pretty much identical, except for one point towards the top right. We can also plot something called a decision-boundary plot to show how any potential data point will be labeled</p>
+<div id="948d178d" class="cell" data-execution_count="7">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import to make colormap of boundary plot colors consistent with the plots above</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> ListedColormap</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -327,7 +327,7 @@ d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># creating a 2d grid; we will make a label prediction at every point on this grid</span></span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>xx, yy <span class="op">=</span> np.meshgrid(np.linspace(x_min, x_max, <span class="dv">500</span>), np.linspace(y_min, y_max, <span class="dv">500</span>))</span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># convert grid into array of 2d points in space</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co"># convert grid into array of 2D points in space</span></span>
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>grid_points <span class="op">=</span> np.c_[xx.ravel(), yy.ravel()]</span>
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># predict label at every grid point</span></span>
@@ -336,7 +336,7 @@ d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Reshape predictions to match the grid</span></span>
 <span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>grid_predictions <span class="op">=</span> grid_predictions.reshape(xx.shape)</span>
 <span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot each label for each gridpoint on a contour plot</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot each label for each grid point on a contour plot</span></span>
 <span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>plt.contourf(xx, yy, grid_predictions, levels<span class="op">=</span>[<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">2.5</span>], alpha<span class="op">=</span><span class="fl">0.3</span>, cmap<span class="op">=</span>custom_cmap)</span>
 <span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the actual predictions</span></span>
@@ -354,7 +354,7 @@ d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
 </div>
 </div>
 <p>If a data point falls within a specific color region, our KNN model will classify it as the corresponding class. And of course, changing our k parameter changes how our KNN classifier makes decisions.</p>
-<div id="32271a89" class="cell" data-execution_count="8">
+<div id="0936b158" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># trying different k values</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>ks <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">13</span>, <span class="dv">55</span>]</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -362,25 +362,26 @@ d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, k <span class="kw">in</span> <span class="bu">enumerate</span>(ks):</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># instantiating anf fitting model</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># instantiating and fitting model</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    model <span class="op">=</span> KNeighborsClassifier(n_neighbors<span class="op">=</span>k)</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    model.fit(X_train, y_train)</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># getting predictions</span></span>
-<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    grid_predictions <span class="op">=</span> model.predict(grid_points)</span>
-<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    grid_predictions <span class="op">=</span> grid_predictions.reshape(xx.shape)</span>
-<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot decision regions</span></span>
-<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, i <span class="op">+</span> <span class="dv">1</span>)</span>
-<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    plt.contourf(xx, yy, grid_predictions, levels<span class="op">=</span>[<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">2.5</span>], alpha<span class="op">=</span><span class="fl">0.3</span>, cmap<span class="op">=</span>custom_cmap)</span>
-<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot actual predictions</span></span>
-<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    plt.scatter(X_test[:, <span class="dv">0</span>], X_test[:, <span class="dv">1</span>], c<span class="op">=</span>preds, cmap<span class="op">=</span>custom_cmap, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
-<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Petal length"</span>)</span>
-<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"Petal width"</span>)</span>
-<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"KNN Decision Boundaries for k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">"</span>)</span>
-<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    preds <span class="op">=</span> model.predict(X_test)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># getting predictions</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    grid_predictions <span class="op">=</span> model.predict(grid_points)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    grid_predictions <span class="op">=</span> grid_predictions.reshape(xx.shape)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot decision regions</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    plt.subplot(<span class="dv">1</span>, <span class="dv">3</span>, i <span class="op">+</span> <span class="dv">1</span>)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    plt.contourf(xx, yy, grid_predictions, levels<span class="op">=</span>[<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="fl">2.5</span>], alpha<span class="op">=</span><span class="fl">0.3</span>, cmap<span class="op">=</span>custom_cmap)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Plot actual predictions</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    plt.scatter(X_test[:, <span class="dv">0</span>], X_test[:, <span class="dv">1</span>], c<span class="op">=</span>preds, cmap<span class="op">=</span>custom_cmap, edgecolor<span class="op">=</span><span class="st">"black"</span>)</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">"Petal length"</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">"Petal width"</span>)</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"KNN Decision Boundaries for k=</span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -389,6 +390,7 @@ d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
 </div>
 </div>
 </div>
+<p>Notice the small isolated patch of orange in the green region for the <span class="math inline">\(k=1\)</span> plot; choosing too small a k value will accentuate oddities in the training data. On the other hand, notice how no data point will ever be labeled with the blue class on the <span class="math inline">\(k=55\)</span> plot. This is because picking too large a k value will result in the majority classes dominating. So while there may be no correct value of k to use, some are definitely better than others.</p>
 </section>
 
 </main>
