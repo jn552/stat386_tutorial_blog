@@ -18,8 +18,9 @@ Suppose for a moment that you have some data on flower petals (as you do). Speci
 | 10.2 | 6.3 | A |
 | 6.4 | 3.2 | B |
 | 3.7 | 2.0 | C |
+| 10.1 | 5.9 | ? |
 
-Now imagine you have the length and width of an unidentified flower petal: 10.2 cm and 5.9 cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, type B or type C flower?
+Now imagine you have the length and width of an unidentified flower petal: 10.1 cm and 5.9 cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, type B or type C flower?
 
 ## Who's Closer -- KNN De-mystified
 One way we could approach this is to compare this unclassified data point with data points we have already classified. We know that one class A flower petal has length 10.2 cm and width 6.3 cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.
@@ -40,19 +41,19 @@ where each $\vec{x}_i$ represents the features of a data point and each $y_i$ is
 Now that we have established some notation, you may have noticed that we've been throwing around the term "nearer" or "closer" a lot. But what does it really mean for data points to be close to each other? The most intuitive way to define this distance is with a Euclidean definition, that is, the spatial distance between two datapoints $\vec{x}$, $\vec{v} \in \mathbb{R}^n$ is given by 
 
 $$
-d(\vec{x}, \vec{v}) = \sqrt{\sum_{i=1}^{n}{(\vec{x}_i - \vec{v}_i})^2}
+d(\vec{x}, \vec{v}) = \sqrt{\sum_{i=1}^{n}{(x_i - v_i)^2}}
 $$
 where $\vec{x}_i$ and  $\vec{v}_i$ are the $i^{th}$ components of $\vec{x}$ and $\vec{v}$ respectively. 
 
 But Euclidean distance isn't the only formulation of distance that exists! There are plenty of other distance metrics that we can use to define the distance between two points in n-dimensional space. For example, consider this metric called Manhattan distance:
 
 $$
-d(\vec{x}, \vec{v}) = \sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|}
+d(\vec{x}, \vec{v}) = \sum_{i=1}^{n}{|{x_i - v_i}|}
 $$
 In two dimensions, an intuitive way to think about Manhattan distance is the distance you would need to travel from point A to B if you could only move up/down and left/right. Another important distance metric is Minkowski distance:
 
 $$
-d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{\vec{x}_i - \vec{v}_i}|^p})^{1/p}
+d_p(\vec{x}, \vec{v}) = (\sum_{i=1}^{n}{|{x_i - v_i}|^p})^{1/p}
 $$
 Here, $p$ is typically called the Minkowski parameter. The larger $p$ is, the more the total distance is dominated by larger component-wise differences. Notice that when $p=1$ and $p=2$, the Minkowski metric reduces to Manhattan and Euclidean distance, respectively.
 
@@ -61,13 +62,13 @@ Now that we have established some notation and a couple ways to think about dist
 
 1. Pick a $k$ value. This $k$ value will determine how many of the nearest data points we will consider when deciding how to label the new data point $\vec{x}$
 2. Calculate the distance $d(\vec{x}, \vec{x}_i)$ for each $\vec{x}_i \in D$
-3. Consider the $k$-closest neighbors $\vec{x}_i$ to $\vec{x}$ and their respective labels $y_i$. Find the most frequent label among $\vec{x}_i$'s k-closest neighbors. Call this label $\hat{y}$
+3. Consider the $k$-closest neighbors $\vec{x}_i$ to $\vec{x}$ and their respective labels $y_i$. Find the most frequent label among $\vec{x}_i$'s $k$-closest neighbors. Call this label $\hat{y}$
 4. Classify $\vec{x}$ with the label $\hat{y}$
 
-# Sklearn's KNN
-Luckily, sklearn has a KNN classifier that we can import and use; we will use this to classify flowers based off their petal measurements. Here's how we can build a simple KNN using sklearn
+# Scikit-learn's KNN
+Luckily, scikit-learn has a KNN classifier that we can import and use; we will use this to classify flowers based off their petal measurements. Here's how we can build a simple KNN using scikit-learn
 
-We will first need to import a couple modules to access sklearn's KNN classifier, to load in some data to work with (flower petal data), to split our data into training and test sets, and to acccess some methods that will make plotting easier.
+We will first need to import a couple modules to access scikit-learn's KNN classifier, to load in some data to work with (flower petal data), to split our data into training and test sets, and to acccess some methods that will make plotting easier.
 
 ```{python}
 #| echo: false
@@ -118,7 +119,7 @@ With the model fitted to our training data, we can now make predictions! If we p
 print(model.score(X_test, y_test))
 ```
 
-Let's plot the data points and color them according to their labels to get a sense of what our KNN classifier is doing.
+Let's plot the data points and color them according to their labels to get a sense of what our KNN classifier is doing. We can call the classifiers built in predict method to get predicted labels.
 
 ```{python}
 # color list to color scatterplot points by label
@@ -147,6 +148,7 @@ plt.show()
 The left scatterplot shows each data point according to their true label, and on the right, we have the data points colored according to their predicted label. We can see that the plots are pretty much identical, except for one point towards the top right. We can also plot something called a decision-boundary plot to show how any potential data point will be labeled
 
 ```{python}
+#| echo: false
 # import to make colormap of boundary plot colors consistent with the plots above
 from matplotlib.colors import ListedColormap
 
@@ -182,10 +184,10 @@ plt.title("KNN Decision Boundaries")
 plt.show()
 ```
 
-If a data point falls within a specific color region, our KNN model will classify it as the corresponding class. And of course, changing our k parameter changes how our KNN classifier makes decisions.
+If a data point falls within a specific color region, our KNN model will classify it as the corresponding class. And of course, changing our $k$ parameter changes how our KNN classifier makes decisions.
 
 ```{python}
-#| output: true
+#| echo: false
 
 # trying different k values
 ks = [1, 13, 55]
@@ -217,3 +219,13 @@ plt.show()
 ```
 
 Notice the small isolated patch of orange in the green region for the $k=1$ plot; choosing too small a k value will accentuate oddities in the training data. On the other hand, notice how no data point will ever be labeled with the blue class on the $k=55$ plot. This is because picking too large a k value will result in the majority classes dominating. So while there may be no correct value of k to use, some are definitely better than others.
+
+# Conclusion
+Even though we used a relatively simple dataset here, KNN classifiers are very powerful models that utilize the geometry of known data points to make classification predictions. As a recap, to build your own KNN classifier with scikit-learn, remember to:
+
+1. Load in your data and separate the data features from the data labels. Remember to create a training set and a testing set.
+2. Instantiate a KNeighborsClassifier object and specify a $k$ value with the kwarg n_neighbors (remember that this $k$ value affects the classifier's behavior)
+3. Fit the classifier with your training data by calling the classifier's fit method
+4. Make predictions with the predict method
+
+Try it out! Pick an appropriate dataset you want to work with and see what you can do. Mess around with different $k$ values and see how your model's behavior changes. We've only skimmed the surface of KNN models and there's a lot to be learned by playing around with these models!
