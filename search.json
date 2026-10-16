@@ -4,7 +4,35 @@
     "href": "index.html",
     "title": "An Introduction to KNN Classifiers",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "Classification problems show up everywhere. Is this email spam or not spam? Is this tumor benign or malignant? Is this credit card transaction fraudulent or legitimate? What flower am I looking at? This list can go on, and a KNN Classifier offers a relatively simple way to solve these problems. But before we show you how to build a KNN classifier, let’s develop some intuition first."
+  },
+  {
+    "objectID": "index.html#knn-classifiers-demystified",
+    "href": "index.html#knn-classifiers-demystified",
+    "title": "An Introduction to KNN Classifiers",
+    "section": "KNN Classifiers Demystified",
+    "text": "KNN Classifiers Demystified\nOne way we could approach this is to compare this unclassified data point with data points we have already classified. We know that one class A flower petal has length 10.2 cm and width 6.3 cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.\nWhat we essentially just did is run a short \\(k\\)-nearest neighbors (KNN) algorithm to classify this unknown data point with \\(k = 1\\): we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors."
+  },
+  {
+    "objectID": "index.html#some-quick-notation",
+    "href": "index.html#some-quick-notation",
+    "title": "An Introduction to KNN Classifiers",
+    "section": "Some Quick Notation",
+    "text": "Some Quick Notation\nNow that we have some intuition behind the KNN algorithm, let’s formalize it with a bit of math. Let our unknown data point’s features be \\(\\vec{x}\\). In our toy example above, \\(\\vec{x}\\) would contain the length and width of the flower petal. Let’s also suppose we have a set of n labeled data points\n\\[\nD = \\{(\\vec{x}_i, y_i)\\}_{i=1}^{n}\n\\] where each \\(\\vec{x}_i\\) represents the features of a data point and each \\(y_i\\) is the label/class of \\(\\vec{x}_i\\). This is our training set, \\(D\\)."
+  },
+  {
+    "objectID": "index.html#what-does-nearer-mean",
+    "href": "index.html#what-does-nearer-mean",
+    "title": "An Introduction to KNN Classifiers",
+    "section": "What Does Nearer Mean?",
+    "text": "What Does Nearer Mean?\nNow that we have established some notation, you may have noticed that we’ve been throwing around the term “nearer” or “closer” a lot. But what does it really mean for data points to be close to each other? The most intuitive way to define this distance is with a Euclidean definition, that is, the spatial distance between two datapoints \\(\\vec{x}\\), \\(\\vec{v} \\in \\mathbb{R}^n\\) is given by\n\\[\nd(\\vec{x}, \\vec{v}) = \\sqrt{\\sum_{i=1}^{n}{(x_i - v_i)^2}}\n\\] where \\(\\vec{x}_i\\) and \\(\\vec{v}_i\\) are the \\(i^{th}\\) components of \\(\\vec{x}\\) and \\(\\vec{v}\\) respectively.\nWe can also define distance between two points in n-dimensional space in other ways. For example, consider this metric called the Manhattan distance:\n\\[\nd(\\vec{x}, \\vec{v}) = \\sum_{i=1}^{n}{|{x_i - v_i}|}\n\\] In two dimensions, an intuitive way to think about Manhattan distance is the distance you would need to travel from point A to B if you could only move up/down and left/right. Another important distance metric is Minkowski distance:\n\\[\nd_p(\\vec{x}, \\vec{v}) = (\\sum_{i=1}^{n}{|{x_i - v_i}|^p})^{1/p}\n\\] Here, \\(p\\) is typically called the Minkowski parameter. The larger \\(p\\) is, the more the total distance is dominated by larger component-wise differences. Notice that when \\(p=1\\) and \\(p=2\\), the Minkowski metric reduces to Manhattan and Euclidean distance, respectively."
+  },
+  {
+    "objectID": "index.html#the-knn-algorithm",
+    "href": "index.html#the-knn-algorithm",
+    "title": "An Introduction to KNN Classifiers",
+    "section": "The KNN Algorithm",
+    "text": "The KNN Algorithm\nNow that we have established some notation and a couple ways to think about distance, here is the full KNN algorithm:\n\nPick a \\(k\\) value. This \\(k\\) value will determine how many of the nearest data points we will consider when deciding how to label the new data point \\(\\vec{x}\\)\nCalculate the distance \\(d(\\vec{x}, \\vec{x}_i)\\) for each \\(\\vec{x}_i \\in D\\)\nConsider the \\(k\\)-closest neighbors \\(\\vec{x}_i\\) to \\(\\vec{x}\\) and their respective labels \\(y_i\\). Find the most frequent label among \\(\\vec{x}_i\\)’s \\(k\\)-closest neighbors. Call this label \\(\\hat{y}\\)\nClassify \\(\\vec{x}\\) with the label \\(\\hat{y}\\)"
   },
   {
     "objectID": "about.html",
@@ -12,40 +40,5 @@
     "title": "About",
     "section": "",
     "text": "About this site"
-  },
-  {
-    "objectID": "blog.html",
-    "href": "blog.html",
-    "title": "An Introduction to KNN Classifiers",
-    "section": "",
-    "text": "Suppose for a moment that you have some data on flower petals (as you do). Specifically, the data available to you include the length and width of a petal along with the type of flower it belongs to. Here’s your very representative data set:\n\n\n\nLength (cm)\nWidth (cm)\nFlower Type\n\n\n\n\n10.2\n6.3\nA\n\n\n6.4\n3.2\nB\n\n\n3.7\n2.0\nC\n\n\n10.1\n5.9\n?\n\n\n\nNow imagine you have the length and width of an unidentified flower petal: 10.1 cm and 5.9 cm, respectively. Using the data that we have in the table above, would you say this petal likely came from a type A, type B or type C flower?\n\n\nOne way we could approach this is to compare this unclassified data point with data points we have already classified. We know that one class A flower petal has length 10.2 cm and width 6.3 cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.\nWhat we essentially just did is run a short \\(k\\)-nearest neighbors (KNN) algorithm to classify this unknown data point with \\(k = 1\\): we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors."
-  },
-  {
-    "objectID": "blog.html#whos-closer-knn-de-mystified",
-    "href": "blog.html#whos-closer-knn-de-mystified",
-    "title": "An Introduction to KNN Classifiers",
-    "section": "",
-    "text": "One way we could approach this is to compare this unclassified data point with data points we have already classified. We know that one class A flower petal has length 10.2 cm and width 6.3 cm, and this is fairly close to our unknown flower, so by a proximity argument, it’s reasonable to assume that this unidentified flower petal belongs to a class A flower.\nWhat we essentially just did is run a short \\(k\\)-nearest neighbors (KNN) algorithm to classify this unknown data point with \\(k = 1\\): we compared how far this new data point was from known data points, focused on its k-nearest data point neighbors, and classified it as the majority class amongst its k-nearest neighbors."
-  },
-  {
-    "objectID": "blog.html#some-quick-notation",
-    "href": "blog.html#some-quick-notation",
-    "title": "An Introduction to KNN Classifiers",
-    "section": "Some Quick Notation",
-    "text": "Some Quick Notation\nNow that we have some intuition behind the KNN algorithm, let’s formalize it with a bit of math. Let our unknown data point’s features be \\(\\vec{x}\\). In our toy example above, \\(\\vec{x}\\) would contain the length and width of the flower petal. Let’s also suppose we have a set of n labeled data points\n\\[\nD = \\{(\\vec{x}_i, y_i)\\}_{i=1}^{n}\n\\] where each \\(\\vec{x}_i\\) represents the features of a data point and each \\(y_i\\) is the label/class of \\(\\vec{x}_i\\). This is our training set, \\(D\\)."
-  },
-  {
-    "objectID": "blog.html#what-does-nearer-mean",
-    "href": "blog.html#what-does-nearer-mean",
-    "title": "An Introduction to KNN Classifiers",
-    "section": "What Does Nearer Mean?",
-    "text": "What Does Nearer Mean?\nNow that we have established some notation, you may have noticed that we’ve been throwing around the term “nearer” or “closer” a lot. But what does it really mean for data points to be close to each other? The most intuitive way to define this distance is with a Euclidean definition, that is, the spatial distance between two datapoints \\(\\vec{x}\\), \\(\\vec{v} \\in \\mathbb{R}^n\\) is given by\n\\[\nd(\\vec{x}, \\vec{v}) = \\sqrt{\\sum_{i=1}^{n}{(x_i - v_i)^2}}\n\\] where \\(\\vec{x}_i\\) and \\(\\vec{v}_i\\) are the \\(i^{th}\\) components of \\(\\vec{x}\\) and \\(\\vec{v}\\) respectively.\nBut Euclidean distance isn’t the only formulation of distance that exists! There are plenty of other distance metrics that we can use to define the distance between two points in n-dimensional space. For example, consider this metric called Manhattan distance:\n\\[\nd(\\vec{x}, \\vec{v}) = \\sum_{i=1}^{n}{|{x_i - v_i}|}\n\\] In two dimensions, an intuitive way to think about Manhattan distance is the distance you would need to travel from point A to B if you could only move up/down and left/right. Another important distance metric is Minkowski distance:\n\\[\nd_p(\\vec{x}, \\vec{v}) = (\\sum_{i=1}^{n}{|{x_i - v_i}|^p})^{1/p}\n\\] Here, \\(p\\) is typically called the Minkowski parameter. The larger \\(p\\) is, the more the total distance is dominated by larger component-wise differences. Notice that when \\(p=1\\) and \\(p=2\\), the Minkowski metric reduces to Manhattan and Euclidean distance, respectively."
-  },
-  {
-    "objectID": "blog.html#the-knn-algorithm",
-    "href": "blog.html#the-knn-algorithm",
-    "title": "An Introduction to KNN Classifiers",
-    "section": "The KNN Algorithm",
-    "text": "The KNN Algorithm\nNow that we have established some notation and a couple ways to think about distance, here is the full KNN algorithm:\n\nPick a \\(k\\) value. This \\(k\\) value will determine how many of the nearest data points we will consider when deciding how to label the new data point \\(\\vec{x}\\)\nCalculate the distance \\(d(\\vec{x}, \\vec{x}_i)\\) for each \\(\\vec{x}_i \\in D\\)\nConsider the \\(k\\)-closest neighbors \\(\\vec{x}_i\\) to \\(\\vec{x}\\) and their respective labels \\(y_i\\). Find the most frequent label among \\(\\vec{x}_i\\)’s \\(k\\)-closest neighbors. Call this label \\(\\hat{y}\\)\nClassify \\(\\vec{x}\\) with the label \\(\\hat{y}\\)"
   }
 ]
